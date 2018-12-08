@@ -15,9 +15,9 @@ let compactInput = "#1 @ 509,796: 18x15|#2 @ 724,606: 23x15|#3 @ 797,105: 10x13|
 
 // - - - - - Data import routines for day 3
 
+// Swift regular expression results are difficult to use, so we need some helpers
+
 extension NSTextCheckingResult {
-    // Swift regular expression results are difficult to use.  This is a useful
-    // helper for extracting the capture groups
     // From https://stackoverflow.com/questions/42789953/swift-3-how-do-i-extract-captured-groups-in-regular-expressions
     func groups(testedString:String) -> [String] {
         var groups = [String]()
@@ -30,12 +30,22 @@ extension NSTextCheckingResult {
     }
 }
 
+// Execute a regular expression and return the capture groups, throwing
+// an error if anything goes wrong
+func exec( regex re : NSRegularExpression, against s : String ) -> [String] {
+    let range = NSRange(location: 0, length: s.count)
+    let result = re.firstMatch(in: s, options: [], range: range)
+    return result!.groups(testedString:s)
+}
+
 func parseClaim(_ s:String) -> [Int] {
     // Parse a claim string and returns an array of ints: id, x, y, w, h
-    let claimRE = try! NSRegularExpression(pattern: "#(\\d+) @ (\\d+)\\,(\\d+)\\: (\\d+)x(\\d+)")
-    let range = NSRange(location: 0, length: s.count)
-    let rex = claimRE.firstMatch(in: s, options: [], range: range)
-    let groups = rex!.groups(testedString:s)
+    let groups = exec( regex: try! NSRegularExpression(pattern: "#(\\d+) @ (\\d+)\\,(\\d+)\\: (\\d+)x(\\d+)"),
+                       against: s)
+//    let claimRE = try! NSRegularExpression(pattern: "#(\\d+) @ (\\d+)\\,(\\d+)\\: (\\d+)x(\\d+)")
+//    let range = NSRange(location: 0, length: s.count)
+//    let rex = claimRE.firstMatch(in: s, options: [], range: range)
+//    let groups = rex!.groups(testedString:s)
     assert(groups.count == 6)
     return [Int(groups[1])!, Int(groups[2])!, Int(groups[3])!,  Int(groups[4])!, Int(groups[5])! ]
 }
