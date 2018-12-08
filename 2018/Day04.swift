@@ -934,18 +934,12 @@ let stringInput = """
 
 // - - - - - Data import routines for day 4
 //
-// I tried representing these as (String, Int,Int,Int,Int) tuples and it was just too much
-// work.  Instead I just format each claim as an array of Ints and encode the claim number
-// rather than a string claim name
 
-struct GuardLogLine {
-    var day : String
-    var hour : Int
-    var minute : Int
-    var hourminute : Int
-}
+// Parse a single guard event line
 
-func parseGuardLogLine(_ s:String) -> (String /* day */,
+func parseGuardLogLine(_ s:String) -> (
+    // These are the returned tuple fields
+    String /* day */,
     Int    /* mins from midnight*/,
     Bool   /* woke up */,
     Bool   /* fell asleep */,
