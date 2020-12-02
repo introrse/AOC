@@ -33,6 +33,20 @@ extension Character {
     }
 }
 
+// Force to lowercase
+extension Character {
+    func toLowerCase() -> Character {
+        return String(self).lowercased().first!
+    }
+}
+
+// Force to uppercase
+extension Character {
+    func toUpperCase() -> Character {
+        return String(self).uppercased().first!
+    }
+}
+
 // Return a string omitting both uppercase and lowercase versions of 'letter'
 extension String {
     func without( letter u : Character ) -> String {
