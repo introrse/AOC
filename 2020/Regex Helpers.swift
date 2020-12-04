@@ -41,7 +41,7 @@ extension NSTextCheckingResult {
 func parse( string s : String, using regex: NSRegularExpression ) -> [String] {
     let range = NSRange(location: 0, length: s.count)
     let result = regex.firstMatch(in: s, options: [], range: range)
-    return result!.groups(testedString:s)
+    return (result == nil) ? [] :  result!.groups(testedString:s)
 }
 
 /// Constructs a regex from a string and runs it against a string, returning the
@@ -52,7 +52,7 @@ func parse( string s : String, using stringRegex: String ) -> [String] {
     let range = NSRange(location: 0, length: s.count)
     let regex = try! NSRegularExpression(pattern: stringRegex)
     let result = regex.firstMatch(in: s, options: [], range: range)
-    return result!.groups(testedString:s)
+    return (result == nil) ? [] :  result!.groups(testedString:s)
 }
 
 
@@ -68,8 +68,8 @@ func parse( stringArray lines : [String], using regex: NSRegularExpression, andE
     var result : [[String]] = []
     for s in lines {
         var groups = parse(string: s, using: regex)
-        assert( (checkcount == 0) || (checkcount == groups.count) )
-        groups.removeFirst()
+        if checkcount != 0  { assert( checkcount == groups.count) }
+        if groups.count > 0 { groups.removeFirst() }
         result.append(groups)
     }
     return result
