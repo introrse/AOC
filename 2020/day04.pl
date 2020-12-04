@@ -15,7 +15,8 @@ sub time_block(&) {
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
+# Helper to check whether n strings are all present in another string
+# (e.g., an unparsed passport)
 sub has {
     my($string,@substrings) = @_;
     for my $ss (@substrings) {
@@ -39,7 +40,7 @@ my $validnpc = 0;
 time_block {
     for my $passport ( @passports ) {
         my @fields = split(/\s+/, $passport);
-#        print(int(@fields)," fields: ", join(", ", @fields), "\n");
+        
         if (has( $passport, "byr:", "iyr:", "eyr:", "hgt:", "hcl:", "ecl:", "pid:", "cid:" )) {
             $validintl++; 
         }
@@ -64,10 +65,13 @@ time_block {
     }
 
 
-    my %fvals;
-    foreach my $k ('byr','iyr','eyr','hgt','hcl','ecl','pid') {
-        $fvals{$k} = {};
-    }
+    # fvals was a debugging construct -- my first answer was too high and I needed to inspect what was being
+    # accepted.  A sorted list of accepted values for each field was easy to scan.
+    #
+    # my %fvals;
+    # foreach my $k ('byr','iyr','eyr','hgt','hcl','ecl','pid') {
+    #     $fvals{$k} = {};
+    # }
     
     for my $passport ( @passports ) {
         if (!has( $passport, "byr:", "iyr:", "eyr:", "hgt:", "hcl:", "ecl:", "pid:" )) {
@@ -98,22 +102,22 @@ time_block {
         next unless $fields{'ecl'} and $fields{'ecl'} =~ /^(amb|blu|brn|gry|grn|hzl|oth)$/;
         next unless $fields{'pid'} and $fields{'pid'} =~ /^\d{9}$/;
         
-        foreach my $k ('byr','iyr','eyr','hgt','hcl','ecl','pid') {
-            $fvals{$k}->{ $fields{$k} } = 1;
-        }
+        # foreach my $k ('byr','iyr','eyr','hgt','hcl','ecl','pid') {
+        #     $fvals{$k}->{ $fields{$k} } = 1;
+        # }
 
-        print "Valid passport: ",$passport, "\n\n";
+#        print "Valid passport: ",$passport, "\n\n";
         $valid_phase2++;
     }
 
     print("Part 2: \n$valid_phase2 valid passports of the ".int(@passports)." total passports\n");
 
-    foreach my $k (keys %fvals) {
-        print("\n\nAccepted $k values\n");
-        foreach my $v (sort keys %{$fvals{$k}}) {
-            print("  ".$v."\n");
-        }
-    }
+    # foreach my $k (keys %fvals) {
+    #     print("\n\nAccepted $k values\n");
+    #     foreach my $v (sort keys %{$fvals{$k}}) {
+    #         print("  ".$v."\n");
+    #     }
+    # }
 };
 
 
@@ -121,16 +125,14 @@ time_block {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 # Results
 
-# Part 1:
-# hit 234 trees
-# Elapsed time 0.000159s
+# Found 285 passports 
+# Part 1: 
+# 88 valid international passports
+# 120 valid North Pole credentials
+# Meaning we let through 208 of the 285 total passports
+# Elapsed time 0.001144s
+#
+# Part 2: 
+# 167 valid passports of the 285 total passports
+# Elapsed time 0.005568s
 
-# Part 2:
-# On slope 1,1, hit 79 trees
-# On slope 3,1, hit 234 trees
-# On slope 5,1, hit 72 trees
-# On slope 7,1, hit 91 trees
-# On slope 1,2, hit 48 trees
-# Product is 5813773056
-# Elapsed time 0.000630s
-        
